@@ -1,5 +1,18 @@
--- ques 1
-/*You can analyze all the tables by describing their contents.
+                                                -- Data cleaning 
+alter table customer
+rename column ï»¿customer_id to customer_id;
+
+alter table order_details
+rename column ï»¿order_id to order_id;
+
+alter table orders
+rename column ï»¿order_id to order_id;
+
+alter table products
+rename column ï»¿product_id to product_id;
+/************************************************************************************************************/
+											-- data understanding
+/*analyze all the tables by describing their contents.
 Task: Describe the Tables:
 Customers
 Products
@@ -18,9 +31,10 @@ desc orders;
 -- describing order_deatils table
 desc order_details;
 
--- ques 2
-/*Problem statement
-Identify the top 3 cities with the highest number of customers to determine key markets for 
+/*************************************************************************************************************/
+                                             -- analysing probelem statements
+
+/*Identify the top 3 cities with the highest number of customers to determine key markets for 
 targeted marketing and logistic optimization.
 
 Hint:
@@ -49,7 +63,7 @@ from cte
 group by NumberOfOrders
 order by NumberOfOrders;
 
--- 
+
 /*Identify products where the average purchase quantity per order is 2 but with a high total 
 revenue, suggesting premium product trends.*/
 
@@ -70,17 +84,6 @@ join orders o
 on od.order_id = o.order_id
 group by p.category;
 
-alter table customer
-rename column ï»¿customer_id to customer_id;
-
-alter table order_details
-rename column ï»¿order_id to order_id;
-
-alter table orders
-rename column ï»¿order_id to order_id;
-
-alter table products
-rename column ï»¿product_id to product_id;
 
 /*Analyze the month-on-month percentage change in total sales to identify growth trends.
 month | TotalSales | PercentageChange*/
@@ -147,52 +150,3 @@ from Orders
 group by date_format(order_date,'%Y-%m')
 order by TotalSales desc
 limit 3;
-
-/************************** ANALYSIS OF BUSINESS REQUIREMENTS ************************************/
-
-
--- KPI’S REQUIREMENTS
-
--- 1. Total Sales Analysis:
-
--- 1.1 Calculate the total sales for each respective month.
-
-select date_format(transaction_date,'%Y-%m') as transaction_month,
-round(sum(transaction_qty*unit_price),2) as total_sales
-from coffee_shop_sales
-group by date_format(transaction_date,'%Y-%m');
-
--- 1.2 Determine the month-on-month increase or decrease in sales.
-
-select date_format(transaction_date,'%Y-%m') as transaction_month,
-round(sum(transaction_qty*unit_price),2) as total_sales,
-lag(sum(transaction_qty*unit_price)) over(order by date_format(transaction_date,'%Y-%m')) as last_mon,
-(sum(transaction_qty*unit_price) - 
-lag(sum(transaction_qty*unit_price)) over(order by date_format(transaction_date,'%Y-%m'))/
-lag(sum(transaction_qty*unit_price)) over(order by date_format(transaction_date,'%Y-%m'))) 
-as MoM_change
-from coffee_shop_sales
-group by date_format(transaction_date,'%Y-%m');
-
--- 1.3 Calculate the difference in sales between the selected month and the previous month.
-
-/*2. Total Orders Analysis:
-
-Calculate the total number of orders for each respective month.
-
-Determine the month-on-month increase or decrease in the number of orders.
-
-Calculate the difference in the number of orders between the selected month and the previous month.
-
-3. Total Quantity Sold Analysis:
-
-Calculate the total quantity sold for each respective month.
-
-Determine the month-on-month increase or decrease in the total quantity sold.
-
-Calculate the difference in the total quantity sold between the selected month and the previous month.
-​
-*/
-
-
-
